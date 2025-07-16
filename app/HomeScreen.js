@@ -1,27 +1,29 @@
 // app/HomeScreen.js
 
-import React, { useState, useCallback } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
-  View,
-  Text,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { useRouter, useFocusEffect } from 'expo-router';
 
-import {
-  getAllExpenses,
-  filterByMonth,
-  deleteExpense,
-} from '../store/asyncStorage';
-import MonthCard from '../components/MonthCard';
+import AddExpenseModal from '../components/AddExpenseModal';
 import CategoryCard from '../components/CategoryCard';
 import ExpenseCard from '../components/ExpenseCard';
+import MonthCard from '../components/MonthCard';
+import {
+  deleteExpense,
+  filterByMonth,
+  getAllExpenses,
+} from '../store/asyncStorage';
 
 export default function HomeScreen() {
-  const router = useRouter();
+  const router = useRouter(); // ensure router is defined
   const [all, setAll] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // reload whenever this screen comes into focus
   useFocusEffect(
@@ -41,8 +43,8 @@ export default function HomeScreen() {
 
   // category breakdown
   const categories = [
-    'Groceries','Entertainment','Healthcare','Education',
-    'Shopping','Travel','Savings','Others',
+    'Groceries', 'Entertainment', 'Healthcare', 'Education',
+    'Shopping', 'Travel', 'Savings', 'Others',
   ].map(cat => {
     const amt = monthExpenses
       .filter(e => e.category === cat)
@@ -70,7 +72,7 @@ export default function HomeScreen() {
     setAll(updated);
   };
 
-  // build last-6-months array
+  // last 6 months data
   const monthsArr = Array.from({ length: 6 }).map((_, i) => {
     const d = new Date();
     d.setMonth(d.getMonth() - i);
@@ -85,6 +87,12 @@ export default function HomeScreen() {
       y: yr,
     };
   });
+
+  // reload data callback for modal close
+  const reloadData = async () => {
+    const data = await getAllExpenses();
+    setAll(data);
+  };
 
   return (
     <View style={styles.container}>
@@ -103,6 +111,7 @@ export default function HomeScreen() {
             year={x.year}
             total={x.total}
             onPress={() =>
+              // navigate using router
               router.push({
                 pathname: '/MonthDetailScreen',
                 params: { month: x.m, year: x.y },
@@ -145,10 +154,18 @@ export default function HomeScreen() {
 
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => router.push('/AddExpenseScreen')}
+        onPress={() => setModalVisible(true)}
       >
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
+
+      <AddExpenseModal
+        visible={modalVisible}
+        onClose={() => {
+          setModalVisible(false);
+          reloadData();
+        }}
+      />
     </View>
   );
 }
@@ -167,8 +184,8 @@ const styles = StyleSheet.create({
   list: { flex: 1 },
   fab: {
     position: 'absolute',
-    bottom: 24,
-    right: 24,
+    bottom: 100,
+    right: 20,
     width: 56,
     height: 56,
     borderRadius: 28,

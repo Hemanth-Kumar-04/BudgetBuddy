@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.hemanth04.BudgetBuddy"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "983330ac-b7f6-410e-9aff-4df5db93929a"
+      }
     }
   }
 }

@@ -1,10 +1,10 @@
 // app/MonthListScreen.js
 
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { getAllExpenses, filterByMonth } from '../store/asyncStorage';
+import { filterByMonth, getAllExpenses } from '../store/asyncStorage';
 
 export default function MonthListScreen() {
   const router = useRouter();
@@ -71,9 +71,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     padding: 20,
-    marginBottom: 12,
     borderWidth: 0.3,
     elevation: 1,
+    marginBottom: 12,
   },
   cardContent: {
     flexDirection: 'row',
